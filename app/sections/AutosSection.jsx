@@ -7,6 +7,7 @@ export default function AutosSection() {
   const [brandFilter, setBrandFilter] = useState("all");
   const [priceFilter, setPriceFilter] = useState("all");
   const [sortBy, setSortBy] = useState("default");
+const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const stored = localStorage.getItem("cars");
@@ -16,13 +17,18 @@ export default function AutosSection() {
   }, []);
 
   useEffect(() => {
-    fetch("/api/cars") // ✅ this is the correct endpoint for GET
-      .then((res) => res.json())
-      .then((data) => {
+    const load = async () => {
+      try {
+        const res = await fetch("/api/cars");
+        const data = await res.json();
         setCars(data);
-        setLoading(false);
-      })
-      .catch((err) => console.error("Error loading cars:", err));
+      } catch (err) {
+        console.error("Error loading cars:", err);
+      } finally {
+        setLoading(false); // ✅ Will work now
+      }
+    };
+    load();
   }, []);
 
   const availableBrands = [

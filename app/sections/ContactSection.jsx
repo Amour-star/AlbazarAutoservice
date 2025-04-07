@@ -142,14 +142,22 @@ export default function ContactSection() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <img src="/icons/whatsapp.svg" alt="WhatsApp" className="w-7 h-7" />
+            <img
+              src="/icons/whatsapp-social-media-svgrepo-com.svg"
+              alt="WhatsApp"
+              className="w-7 h-7"
+            />
           </a>
           <a
             href="https://wa.me/31645060805"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <img src="/icons/whatsapp.svg" alt="WhatsApp" className="w-7 h-7" />
+            <img
+              src="/icons/whatsapp-social-media-svgrepo-com.svg"
+              alt="WhatsApp"
+              className="w-7 h-7"
+            />
           </a>
           <a
             href="https://maps.app.goo.gl/3aPCaqepcUzYzvnC9"

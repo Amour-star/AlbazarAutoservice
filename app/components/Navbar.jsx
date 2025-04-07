@@ -47,7 +47,11 @@ export default function Navbar({ activeId }) {
           href="#home"
           className="flex items-center gap-2 text-yellow-500 dark:text-yellow-300 text-xl font-bold"
         >
-          <img src="/car.svg" alt="Logo" className="h-7 w-auto" />
+          <img
+            src="/logo.jpg"
+            alt="Logo"
+            className="h-7 w-7 rounded-full object-cover"
+          />
           Albazar Autoservice
         </a>
 

@@ -78,7 +78,15 @@ export default function CarCard({ car }) {
 
         {/* Car Details */}
         <h3 className="text-xl font-bold mt-3">{car.title}</h3>
-        <p className="text-green-600 font-semibold">{car.price}</p>
+        <h3 className="text-xl font-bold mt-3">{car.title}</h3>
+        <p className="text-green-600 font-semibold">
+          {new Intl.NumberFormat("de-DE", {
+            style: "currency",
+            currency: "EUR",
+            minimumFractionDigits: 0,
+          }).format(car.price)}
+        </p>
+
         <p className="text-sm">
           {car.year} • {car.kilometer} km
         </p>
