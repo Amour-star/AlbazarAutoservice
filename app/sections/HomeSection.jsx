@@ -1,85 +1,77 @@
-'use client';
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+"use client";
+import { motion } from "framer-motion";
+import { useState } from "react";
+import Modal from "react-modal";
+
+Modal.setAppElement("body");
+
+const previewText = `Door jaren in Breda actief te zijn in de verkoop en reparatie van automobielen heeft Garagebedrijf Albazar een gevestigde naam gekregen.`;
+
+const fullText = `Door jaren in Breda actief te zijn in de verkoop en reparatie van automobielen heeft Garagebedrijf Albazar een gevestigde naam in Breda gekregen.
+Dit gezellige familiebedrijf aan Hazeldonk 6297 4836LG Breda straalt vertrouwen en kennis uit, u krijgt hier absoluut een goed gevoel als u bij hun terecht komt voor reparatie, advies of een ander automobiel.
+
+Hier een opsomming waarmee u terecht kunt bij Garagebedrijf Albazar Autoservice te Breda:
+
+• Auto in- en verkoop
+• Auto Export-Import
+• Alle soorten reparaties
+• Schade afwikkeling en reparatie
+• Autobandenafdeling
+• Airco-service
+• Financiering
+
+Dit alles wordt van te voren duidelijk met u besproken en overlegd, eerst een goed advies, dan een prijsopgaaf zodat u nooit voor nare verrassingen komt te staan.
+
+Flexibiliteit – Eerlijkheid – Betrouwbaarheid dat zijn de sleutelwoorden van dit gezellige en professionele autobedrijf.`;
 
 export default function HomeSection() {
-  const [expanded, setExpanded] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
-    <section id="home" className="relative px-4 sm:px-6 py-12 overflow-hidden">
-      {/* Background */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
-        style={{ backgroundImage: 'url("/images/garage-bg.jpg")' }}
-      />
-      <div className="absolute inset-0 bg-black/60 dark:bg-black/70 z-10" />
+    <section
+      id="home"
+      className="relative bg-[#0f0f0f] text-white px-4 py-12 sm:px-6"
+    >
+      {/* Background Overlay (if any) */}
+      {/* <div className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0" style={{ backgroundImage: 'url(/your-bg.jpg)' }} /> */}
 
-      {/* Content */}
       <motion.div
-        className="relative z-20 text-center px-6 max-w-4xl mx-auto text-yellow-100"
-        initial={{ opacity: 0, y: 40 }}
+        initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 0.6 }}
+        className="relative z-10 max-w-3xl mx-auto text-center"
       >
-        <h1 className="text-3xl md:text-4xl font-bold text-yellow-400 mb-4">
-          Welkom bij Garagebedrijf Albazar Autoservice
+        <h1 className="text-3xl font-bold mb-4">
+          Welkom bij Garagebedrijf Albazar
         </h1>
-
-        <p className="text-base md:text-lg mb-6 leading-relaxed">
-          Door jaren actief te zijn in de verkoop en reparatie van auto’s heeft Garagebedrijf Albazar
-          een gevestigde naam in Breda opgebouwd.
-        </p>
-
-        <AnimatePresence>
-          {expanded && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.5 }}
-              className="overflow-hidden"
-            >
-              <p className="text-base md:text-lg mb-4 leading-relaxed">
-                Dit gezellige familiebedrijf aan <strong>Hazeldonk 6297, 4836LG Breda</strong> straalt
-                vertrouwen en kennis uit. U krijgt hier absoluut een goed gevoel als u bij ons terecht
-                komt voor reparatie, advies of een andere auto.
-              </p>
-              <p className="text-base md:text-lg mb-4 leading-relaxed">
-                <strong>Onze diensten:</strong><br />
-                Auto in- en verkoop · Auto Export-Import · Alle soorten reparaties · Schadeherstel ·
-                Autobanden · Airco-service · Financiering
-              </p>
-              <p className="text-base md:text-lg mb-4 leading-relaxed">
-                Eerst goed advies, dan een prijsopgaaf — zodat u nooit voor verrassingen komt te staan.
-              </p>
-              <p className="text-base md:text-lg mb-6 leading-relaxed">
-                <strong>Flexibiliteit – Eerlijkheid – Betrouwbaarheid</strong> zijn onze sleutelwoorden.
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Lees meer toggle */}
-        <div className="mb-4">
-          <button
-            onClick={() => setExpanded(!expanded)}
-            className="text-yellow-300 hover:text-yellow-100 underline font-medium"
-          >
-            {expanded ? 'Lees minder' : 'Lees meer'}
-          </button>
-        </div>
-
-        {/* CTA Button on its own line */}
-        <div>
-          <a
-            href="#autos"
-            className="inline-block bg-yellow-600 dark:bg-yellow-400 text-white dark:text-black font-semibold px-6 py-3 rounded hover:bg-yellow-700 dark:hover:bg-yellow-300 transition"
-          >
-            Bekijk onze auto’s
-          </a>
-        </div>
+        <div className="w-40 h-1 bg-yellow-400 mx-auto mb-6" />
+        <p className="text-lg mb-4">{previewText}</p>
+        <button
+          onClick={() => setModalOpen(true)}
+          className="bg-yellow-400 text-black px-6 py-2 rounded hover:bg-yellow-500 transition"
+        >
+          Lees meer
+        </button>
       </motion.div>
+
+      <Modal
+        isOpen={modalOpen}
+        onRequestClose={() => setModalOpen(false)}
+        className="max-w-3xl bg-white dark:bg-zinc-900 p-6 rounded shadow-lg mx-auto my-20 relative text-black dark:text-white"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
+      >
+        <button
+          onClick={() => setModalOpen(false)}
+          className="absolute top-4 right-4 text-2xl text-gray-600 hover:text-gray-800 dark:text-white"
+          title="Sluiten"
+        >
+          ✕
+        </button>
+        <div className="whitespace-pre-wrap text-sm max-h-[75vh] overflow-y-auto">
+          {fullText}
+        </div>
+      </Modal>
     </section>
   );
 }

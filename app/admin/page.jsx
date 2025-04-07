@@ -1,30 +1,122 @@
 "use client";
 import { useEffect, useState } from "react";
+import {
+  DndContext,
+  closestCenter,
+  useSensor,
+  useSensors,
+  PointerSensor,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
+const BRANDS = [
+  "Audi",
+  "BMW",
+  "Citroën",
+  "Dacia",
+  "Fiat",
+  "Ford",
+  "Honda",
+  "Hyundai",
+  "Kia",
+  "Mazda",
+  "Mercedes-Benz",
+  "Mitsubishi",
+  "Nissan",
+  "Opel",
+  "Peugeot",
+  "Renault",
+  "Seat",
+  "Skoda",
+  "Suzuki",
+  "Tesla",
+  "Toyota",
+  "Volkswagen",
+  "Volvo",
+];
+const YEARS = Array.from(
+  { length: 50 },
+  (_, i) => new Date().getFullYear() - i
+);
+
+function SortableImage({ image, index, onRemove, onMain, isMain }) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: index });
+  const style = { transform: CSS.Transform.toString(transform), transition };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className="relative group"
+    >
+      <img
+        src={image}
+        className={`w-24 h-24 object-cover rounded border-2 ${
+          isMain ? "border-yellow-400" : "border-gray-300"
+        }`}
+        alt={`preview-${index}`}
+        onClick={() => onMain(index)}
+      />
+      <button
+        onClick={() => onRemove(index)}
+        className="absolute top-0 right-0 bg-red-600 text-white w-5 h-5 rounded-full text-xs opacity-0 group-hover:opacity-100 transition"
+        title="Verwijder"
+      >
+        ✕
+      </button>
+      {isMain && (
+        <span className="absolute bottom-0 left-0 text-xs bg-yellow-400 text-black px-1 rounded-tr">
+          ⭐ Hoofd
+        </span>
+      )}
+    </div>
+  );
+}
 
 export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
   const [cars, setCars] = useState([]);
+  const [editIndex, setEditIndex] = useState(null);
+
   const [form, setForm] = useState({
     title: "",
-    price: "",
-    description: "",
+    brand: "",
     year: "",
     fuel: "",
     transmission: "",
     kilometer: "",
+    price: "",
+    description: "",
     images: [],
+    mainImageIndex: 0,
   });
-  const [editIndex, setEditIndex] = useState(null);
+
+  const sensors = useSensors(useSensor(PointerSensor));
 
   useEffect(() => {
-    const stored = localStorage.getItem("cars");
-    if (stored) setCars(JSON.parse(stored));
+    const loadCars = async () => {
+      try {
+        const res = await fetch("/api/cars");
+        if (!res.ok) throw new Error("Failed to fetch");
+        const data = await res.json();
+        setCars(data);
+      } catch (err) {
+        console.error("Error loading cars:", err);
+      }
+    };
+
+    loadCars();
   }, []);
-
-  useEffect(() => {
-    localStorage.setItem("cars", JSON.stringify(cars));
-  }, [cars]);
 
   const handleLogin = () => {
     if (password === "admin123") setAuthenticated(true);
@@ -34,71 +126,99 @@ export default function AdminPage() {
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     if (files.length + form.images.length > 10) {
-      alert("Max 10 images per car");
+      alert("Maximaal 10 afbeeldingen per auto");
       return;
     }
-    const readers = files.map((file) => {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.readAsDataURL(file);
-      });
-    });
-    Promise.all(readers).then((newImages) => {
-      setForm({ ...form, images: [...form.images, ...newImages] });
+
+    Promise.all(
+      files.map((file) => {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(file);
+        });
+      })
+    ).then((newImages) => {
+      setForm((prev) => ({
+        ...prev,
+        images: [...prev.images, ...newImages],
+        mainImageIndex: prev.images.length === 0 ? 0 : prev.mainImageIndex,
+      }));
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (
-      !form.title ||
-      !form.price ||
-      !form.description ||
-      !form.year ||
-      !form.fuel ||
-      !form.transmission ||
-      !form.kilometer ||
-      form.images.length === 0
-    ) {
-      alert("Please fill in all fields and add at least one image.");
+    const required = [
+      "title",
+      "brand",
+      "year",
+      "fuel",
+      "transmission",
+      "kilometer",
+      "price",
+      "description",
+    ];
+    if (required.some((k) => !form[k]) || form.images.length === 0) {
+      alert("Vul alle velden in en upload minimaal één afbeelding.");
       return;
     }
-    if (editIndex !== null) {
-      const updated = [...cars];
-      updated[editIndex] = form;
-      setCars(updated);
-    } else {
-      setCars([...cars, form]);
-    }
+
+    const updated = [...cars];
+    if (editIndex !== null) updated[editIndex] = form;
+    else updated.push(form);
+
+    setCars(updated);
     setForm({
       title: "",
-      price: "",
-      description: "",
+      brand: "",
       year: "",
       fuel: "",
       transmission: "",
       kilometer: "",
+      price: "",
+      description: "",
       images: [],
+      mainImageIndex: 0,
     });
     setEditIndex(null);
+
+    await fetch("/api/save-cars", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updated),
+    });
   };
 
-  const handleEdit = (index) => {
-    setForm(cars[index]);
-    setEditIndex(index);
+  const handleEdit = (i) => {
+    setForm(cars[i]);
+    setEditIndex(i);
   };
 
-  const handleDelete = (index) => {
+  const handleDelete = (i) => {
     if (confirm("Verwijderen?")) {
       const updated = [...cars];
-      updated.splice(index, 1);
+      updated.splice(i, 1);
       setCars(updated);
     }
   };
 
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 50 }, (_, i) => currentYear - i);
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const reordered = arrayMove(form.images, active.id, over.id);
+    let newMain = form.mainImageIndex;
+    if (active.id === newMain) newMain = over.id;
+    else if (active.id < newMain && over.id >= newMain) newMain -= 1;
+    else if (active.id > newMain && over.id <= newMain) newMain += 1;
+
+    setForm((prev) => ({
+      ...prev,
+      images: reordered,
+      mainImageIndex: newMain,
+    }));
+  };
 
   if (!authenticated) {
     return (
@@ -108,7 +228,7 @@ export default function AdminPage() {
           <input
             type="password"
             className="w-full border px-4 py-2 rounded mb-4"
-            placeholder="Password"
+            placeholder="Wachtwoord"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -116,7 +236,7 @@ export default function AdminPage() {
             onClick={handleLogin}
             className="bg-emerald-600 text-white px-4 py-2 rounded w-full"
           >
-            Login
+            Inloggen
           </button>
         </div>
       </div>
@@ -124,69 +244,66 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Car Admin Panel</h1>
+    <div className="p-6 max-w-5xl mx-auto text-black">
+      <h1 className="text-3xl font-bold mb-6">Auto Beheer</h1>
+
       <form onSubmit={handleSubmit} className="space-y-4 mb-10">
         <select
-          className="w-full border px-4 py-2 rounded"
-          value={form.brand || ""}
+          value={form.brand}
           onChange={(e) => setForm({ ...form, brand: e.target.value })}
+          className="w-full border px-4 py-2 rounded"
         >
           <option value="">Selecteer merk</option>
-          <option value="Audi">Audi</option>
-          <option value="BMW">BMW</option>
-          <option value="Citroën">Citroën</option>
-          <option value="Dacia">Dacia</option>
-          <option value="Fiat">Fiat</option>
-          <option value="Ford">Ford</option>
-          <option value="Honda">Honda</option>
-          <option value="Hyundai">Hyundai</option>
-          <option value="Kia">Kia</option>
-          <option value="Mazda">Mazda</option>
-          <option value="Mercedes-Benz">Mercedes-Benz</option>
-          <option value="Mitsubishi">Mitsubishi</option>
-          <option value="Nissan">Nissan</option>
-          <option value="Opel">Opel</option>
-          <option value="Peugeot">Peugeot</option>
-          <option value="Renault">Renault</option>
-          <option value="Seat">Seat</option>
-          <option value="Skoda">Skoda</option>
-          <option value="Suzuki">Suzuki</option>
-          <option value="Tesla">Tesla</option>
-          <option value="Toyota">Toyota</option>
-          <option value="Volkswagen">Volkswagen</option>
-          <option value="Volvo">Volvo</option>
+          {BRANDS.map((b, i) => (
+            <option key={i} value={b}>
+              {b}
+            </option>
+          ))}
         </select>
         <input
           type="text"
           placeholder="Titel"
-          className="w-full border px-4 py-2 rounded"
           value={form.title}
           onChange={(e) => setForm({ ...form, title: e.target.value })}
+          className="w-full border px-4 py-2 rounded"
+        />
+        <textarea
+          placeholder="Beschrijving"
+          value={form.description}
+          onChange={(e) => setForm({ ...form, description: e.target.value })}
+          rows={4}
+          className="w-full border px-4 py-2 rounded"
         />
         <input
           type="text"
           placeholder="Prijs"
-          className="w-full border px-4 py-2 rounded"
           value={form.price}
           onChange={(e) => setForm({ ...form, price: e.target.value })}
+          className="w-full border px-4 py-2 rounded"
+        />
+        <input
+          type="text"
+          placeholder="Kilometerstand"
+          value={form.kilometer}
+          onChange={(e) => setForm({ ...form, kilometer: e.target.value })}
+          className="w-full border px-4 py-2 rounded"
         />
         <select
-          className="w-full border px-4 py-2 rounded"
           value={form.year}
           onChange={(e) => setForm({ ...form, year: e.target.value })}
+          className="w-full border px-4 py-2 rounded"
         >
           <option value="">Selecteer bouwjaar</option>
-          {years.map((y) => (
+          {YEARS.map((y) => (
             <option key={y} value={y}>
               {y}
             </option>
           ))}
         </select>
         <select
-          className="w-full border px-4 py-2 rounded"
           value={form.fuel}
           onChange={(e) => setForm({ ...form, fuel: e.target.value })}
+          className="w-full border px-4 py-2 rounded"
         >
           <option value="">Selecteer brandstof</option>
           <option value="benzine">Benzine</option>
@@ -196,80 +313,92 @@ export default function AdminPage() {
           <option value="gas">Gas</option>
         </select>
         <select
-          className="w-full border px-4 py-2 rounded"
           value={form.transmission}
           onChange={(e) => setForm({ ...form, transmission: e.target.value })}
+          className="w-full border px-4 py-2 rounded"
         >
           <option value="">Selecteer transmissie</option>
           <option value="Automaat">Automaat</option>
           <option value="Handgeschakeld">Handgeschakeld</option>
         </select>
-        <input
-          type="text"
-          placeholder="Kilometerstand"
-          className="w-full border px-4 py-2 rounded"
-          value={form.kilometer}
-          onChange={(e) => setForm({ ...form, kilometer: e.target.value })}
-        />
-        <textarea
-          placeholder="Beschrijving"
-          className="w-full border px-4 py-2 rounded"
-          rows={4}
-          value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
-        />
+
         <label className="block font-medium">
           Afbeeldingen uploaden (max 10):
         </label>
         <button
           type="button"
-          className="bg-blue-500 text-white px-4 py-2 rounded"
           onClick={() => document.getElementById("imageInput").click()}
+          className="bg-blue-500 text-white px-4 py-2 rounded"
         >
           Kies afbeeldingen
         </button>
         <input
+          id="imageInput"
           type="file"
           accept="image/*"
           multiple
-          id="imageInput"
           className="hidden"
           onChange={handleImageUpload}
         />
-        <div className="flex flex-wrap gap-2">
-          {form.images.map((img, i) => (
-            <img
-              key={i}
-              src={img}
-              alt="preview"
-              className="w-24 h-24 object-cover rounded"
-            />
-          ))}
-        </div>
+
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={form.images.map((_, i) => i)}
+            strategy={verticalListSortingStrategy}
+          >
+            <div className="flex flex-wrap gap-2">
+              {form.images.map((img, i) => (
+                <SortableImage
+                  key={i}
+                  image={img}
+                  index={i}
+                  isMain={i === form.mainImageIndex}
+                  onRemove={(index) => {
+                    const updated = [...form.images];
+                    updated.splice(index, 1);
+                    setForm((prev) => ({
+                      ...prev,
+                      images: updated,
+                      mainImageIndex:
+                        prev.mainImageIndex === index ? 0 : prev.mainImageIndex,
+                    }));
+                  }}
+                  onMain={(index) =>
+                    setForm({ ...form, mainImageIndex: index })
+                  }
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
+
         <button
           type="submit"
           className="bg-emerald-600 text-white px-4 py-2 rounded"
         >
-          {editIndex !== null ? "Update Car" : "Add Car"}
+          {editIndex !== null ? "Update auto" : "Voeg auto toe"}
         </button>
       </form>
 
-      <h2 className="text-2xl font-semibold mb-4">Cars</h2>
+      <h2 className="text-2xl font-semibold mb-4">Auto Lijst</h2>
       <div className="grid gap-4">
-        {cars.map((car, index) => (
-          <div key={index} className="border p-4 rounded">
+        {cars.map((car, i) => (
+          <div key={i} className="border p-4 rounded bg-white shadow">
             <h3 className="text-lg font-bold">
               {car.title} - {car.price}
             </h3>
             <p>
-              {car.brand} | {car.year} | {car.fuel} | {car.transmission} |{" "}
-              {car.kilometer} km
+              {car.year} | {car.fuel} | {car.transmission} | {car.kilometer} km
             </p>
             <p className="mb-2">{car.description}</p>
             <div className="flex gap-2 overflow-x-auto">
-              {car.images.map((img, i) => (
+              {car.images.map((img, j) => (
                 <img
-                  key={i}
+                  key={j}
                   src={img}
                   className="w-20 h-20 object-cover rounded"
                 />
@@ -277,16 +406,16 @@ export default function AdminPage() {
             </div>
             <div className="mt-2 flex gap-2">
               <button
-                onClick={() => handleEdit(index)}
+                onClick={() => handleEdit(i)}
                 className="px-3 py-1 bg-blue-500 text-white rounded"
               >
-                Edit
+                Bewerk
               </button>
               <button
-                onClick={() => handleDelete(index)}
+                onClick={() => handleDelete(i)}
                 className="px-3 py-1 bg-red-500 text-white rounded"
               >
-                Delete
+                Verwijder
               </button>
             </div>
           </div>

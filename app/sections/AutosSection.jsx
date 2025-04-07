@@ -16,12 +16,13 @@ export default function AutosSection() {
   }, []);
 
   useEffect(() => {
-    const syncCars = () => {
-      const updated = localStorage.getItem("cars");
-      if (updated) setCars(JSON.parse(updated));
-    };
-    window.addEventListener("storage", syncCars);
-    return () => window.removeEventListener("storage", syncCars);
+    fetch("/api/cars") // ✅ this is the correct endpoint for GET
+      .then((res) => res.json())
+      .then((data) => {
+        setCars(data);
+        setLoading(false);
+      })
+      .catch((err) => console.error("Error loading cars:", err));
   }, []);
 
   const availableBrands = [
@@ -60,15 +61,14 @@ export default function AutosSection() {
   return (
     <section
       id="autos"
-      className="relative px-4 sm:px-6 py-12 overflow-hidden scroll-mt-24"
+      className="relative bg-[#0f0f0f] px-4 sm:px-6 py-12 overflow-hidden scroll-mt-24"
     >
       {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
-        style={{ backgroundImage: 'url("/images/garage-bg.jpg")' }}
       />
       {/* Overlay */}
-      <div className="absolute inset-0 bg-black/60 dark:bg-black/70 z-10" />
+      {/* <div className="absolute inset-0 bg-black/60 dark:bg-black/70 z-10" /> */}
 
       {/* Content */}
       <div className="relative z-20 text-yellow-100 max-w-7xl mx-auto">

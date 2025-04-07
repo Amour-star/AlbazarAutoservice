@@ -1,138 +1,134 @@
 "use client";
-import { useState } from "react";
 import { motion } from "framer-motion";
+import { useState } from "react";
+import Modal from "react-modal";
+
+Modal.setAppElement("body");
 
 const services = [
   {
     title: "Auto in- en verkoop",
-    summary:
-      "Wij kopen en verkopen betrouwbare occasions tegen eerlijke prijzen.",
-    details:
-      "Bij Albazar Autoservice kunt u terecht voor de aankoop van betrouwbare occasions en het verkopen van uw voertuig tegen scherpe condities. Wij verzorgen alles van taxatie tot vrijwaring.",
+    description:
+      "Wij bieden betrouwbare voertuigen aan en nemen uw auto graag over.",
   },
   {
     title: "Auto Export-Import",
-    summary:
-      "Volledige RDW-exportdienstverlening inclusief verzekering en tijdelijke kentekenplaten.",
-    details: `
-RDW EXPORT DIENSTVERLENING
+    description: "Wij regelen volledige RDW exportdocumenten en verzekering.",
+    fullText: `RDW EXPORT DIENSTVERLENING
 
-Als u uw auto wilt exporteren, dan dient de auto te worden uitgeschreven uit het Nederlands kentekenregister. Bij Albazar Autoservice regelen wij dat graag voor u!
+Als u uw auto wilt exporteren, dan dient de auto te worden uitgeschreven uit het Nederlands kentekenregister. Bij Car Vision Epe regelen wij dat graag voor u!
 
-Om een auto voor u te kunnen exporteren dienen wij te beschikken over een aantal zaken:
+Voertuig exporteren RDW
+Om een auto voor u te kunnen exporteren dienen wij te beschikken over een aantal zaken. Alleen met deze documenten kunnen wij de auto officieel afmelden bij de RDW. Als de export is goedgekeurd bent u gevrijwaard van het betalen van wegenbelasting en uw verzekering.
 
-- Originele Nederlandse kentekenplaten  
-- Afgelezen kilometerstand van het voertuig  
-- Kentekenpapieren of kentekenkaart met tenaamstellingscodes  
-- Geldig legitimatiebewijs van diegene die de auto exporteert  
+De volgende zaken en documenten hebben wij nodig om te exporteren:
+• Originele Nederlandse kentekenplaten
+• Afgelezen kilometerstand van het voertuig
+• Kentekenpapieren of kentekenkaart met tenaamstellingscodes
+• Geldig legitimatiebewijs
 
-Na goedkeuring ontvangt u van ons:
+Na export ontvangt u:
+• Kentekenbewijs deel II
+• Vrijwaringsbewijs
 
-- Kentekenbewijs deel II  
-- Vrijwaringsbewijs  
+Als u rijdend het land wilt verlaten, kunnen wij tijdelijke verzekering + witte kentekenplaten verzorgen (14 dagen geldig, voertuig moet APK-gekeurd zijn).
 
-Let op: rijden op de openbare weg is daarna niet meer toegestaan zonder tijdelijke verzekering. Wij kunnen tijdelijke verzekering + witte platen voor 14 dagen regelen indien nodig.
+Tarieven per 01-01-2023:
+• Export papieren: €40
+• SOC papieren: €75
+• Export + verzekering + platen: €150
 
-Tarieven vanaf 01-01-2023:
-
-- Exportpapieren: € 40  
-- SOC Papieren: € 75  
-- Export + verzekering (14 dagen) + platen: € 150,-
-`,
+Voor meer informatie of afspraak: stuur ons een bericht.`,
   },
   {
     title: "Alle soorten reparaties",
-    summary: "Van kleine storingen tot complete motorrevisies.",
-    details:
-      "Wij voeren alle soorten reparaties uit, van kleine problemen tot grote mechanische herstellingen. Altijd met garantie en heldere communicatie.",
+    description: "Van motor tot elektronica – wij herstellen alles vakkundig.",
   },
   {
     title: "Schade afwikkeling en reparatie",
-    summary:
-      "Volledige schadeherstelservice inclusief verzekeringsafhandeling.",
-    details:
-      "Wij nemen het volledige schadeproces voor u uit handen, inclusief contact met uw verzekering, herstel van de schade en het in originele staat brengen van uw voertuig.",
+    description: "Volledige begeleiding bij schade en herstel.",
   },
   {
     title: "Autobandenafdeling",
-    summary: "Nieuwe banden, balanceren en uitlijnen – alles onder één dak.",
-    details:
-      "Wij bieden een ruim assortiment aan banden, snelle montage, uitlijnen en balanceren zodat u weer veilig de weg op kunt.",
+    description: "Nieuwe banden, uitlijnen en advies op maat.",
   },
   {
     title: "Airco-service",
-    summary: "Onderhoud en bijvullen van uw aircosysteem.",
-    details:
-      "Een goed werkende airco verhoogt het comfort en de veiligheid. Wij controleren, reinigen en vullen uw airco bij wanneer nodig.",
+    description: "Onderhoud, bijvullen en reparatie van uw airco.",
   },
   {
     title: "Financiering",
-    summary: "Mogelijkheden voor het financieren van uw nieuwe auto.",
-    details:
-      "Wij helpen u met passende financieringsopties zodat u uw droomauto direct kunt rijden. Vraag naar de mogelijkheden in onze showroom.",
+    description: "Flexibele financieringsmogelijkheden voor uw aankoop.",
   },
 ];
 
 export default function ServicesSection() {
-  const [expanded, setExpanded] = useState([]);
-
-  const toggle = (index) => {
-    setExpanded((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
-    );
-  };
+  const [modalContent, setModalContent] = useState(null);
 
   return (
     <section
       id="services"
-      className="relative px-4 sm:px-6 py-12 overflow-hidden"
+      className="relative z-10 bg-[#0f0f0f] text-white px-4 py-8 sm:px-6"
     >
-      {/* 🔳 Background image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
-        style={{ backgroundImage: 'url("/images/garage-bg.jpg")' }}
-      />
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="max-w-4xl mx-auto text-center"
+      >
+        <h2 className="text-3xl font-bold mb-2">Onze Diensten</h2>
+        <div className="w-40 h-1 bg-yellow-400 mx-auto mb-8" />
+      </motion.div>
 
-      {/* 🔲 Overlay */}
-      <div className="absolute inset-0 bg-black/60 dark:bg-black/70 z-10" />
-
-      {/* 🔤 Content */}
-      <div className="relative z-20 w-full max-w-4xl text-yellow-100">
-        <h2 className="text-3xl font-bold text-yellow-400 mb-10 text-center">
-          Onze Diensten
-        </h2>
-
-        <div className="space-y-4">
-          {services.map((service, i) => (
-            <div
-              key={i}
-              className="border border-yellow-600 dark:border-yellow-400 rounded bg-black/30 backdrop-blur"
-            >
-              <button
-                onClick={() => toggle(i)}
-                className="w-full text-left px-4 py-3 flex justify-between items-center font-semibold text-yellow-300 hover:text-yellow-100"
-              >
-                <span>{service.title}</span>
-                <span>{expanded.includes(i) ? "▲" : "▼"}</span>
-              </button>
-
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={
-                  expanded.includes(i)
-                    ? { height: "auto", opacity: 1 }
-                    : { height: 0, opacity: 0 }
-                }
-                transition={{ duration: 0.3 }}
-                className="overflow-hidden px-4 pb-4 text-sm text-yellow-200 whitespace-pre-line"
-              >
-                <p className="font-medium mb-2">{service.summary}</p>
-                {expanded.includes(i) && <div>{service.details}</div>}
-              </motion.div>
-            </div>
-          ))}
-        </div>
+      <div className="max-w-6xl mx-auto grid gap-6 sm:grid-cols-2 lg:grid-cols-3 place-items-center">
+        {services.map((service, index) => (
+          <motion.div
+            key={index}
+            className="bg-zinc-800 text-white rounded shadow p-4 w-full max-w-xs text-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: index * 0.05 }}
+          >
+            <h3 className="text-lg font-semibold mb-1">{service.title}</h3>
+            <p className="text-sm text-gray-300">
+              {service.fullText ? (
+                <>
+                  {service.description}
+                  <button
+                    className="ml-2 text-yellow-400 underline text-sm"
+                    onClick={() => setModalContent(service.fullText)}
+                  >
+                    Lees meer
+                  </button>
+                </>
+              ) : (
+                service.description
+              )}
+            </p>
+          </motion.div>
+        ))}
       </div>
+
+      {/* Modal */}
+      <Modal
+        isOpen={!!modalContent}
+        onRequestClose={() => setModalContent(null)}
+        className="max-w-3xl bg-white dark:bg-zinc-900 p-6 rounded shadow-lg mx-auto my-20 relative text-black dark:text-white"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
+      >
+        <button
+          onClick={() => setModalContent(null)}
+          className="absolute top-4 right-4 text-2xl text-gray-600 hover:text-gray-800 dark:text-white"
+          title="Sluiten"
+        >
+          ✕
+        </button>
+        <div className="whitespace-pre-wrap text-sm max-h-[75vh] overflow-y-auto">
+          {modalContent}
+        </div>
+      </Modal>
     </section>
   );
 }

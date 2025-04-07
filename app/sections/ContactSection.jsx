@@ -30,18 +30,17 @@ export default function ContactSection() {
   return (
     <section
       id="contact"
-      className="relative px-4 sm:px-6 py-12 overflow-hidden"
+      className="w-full bg-[#0f0f0f] text-white px-4 py-4 sm:px-6"
     >
       <Toaster position="top-center" />
 
       {/* 🔳 Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
-        style={{ backgroundImage: 'url("/images/garage-bg.jpg")' }}
       />
 
       {/* 🔲 Overlay */}
-      <div className="absolute inset-0 bg-black/60 dark:bg-black/70 z-10" />
+      {/* <div className="absolute inset-0 bg-black/60 dark:bg-black/70 z-10" /> */}
 
       {/* ✨ Content */}
       <motion.div
@@ -51,7 +50,7 @@ export default function ContactSection() {
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
       >
-        <h2 className="text-3xl font-bold mb-6 text-center text-yellow-400 border-b pb-2 border-yellow-400 dark:border-yellow-500">
+        <h2 className="text-3xl font-bold mb-6 text-center text-white-400 border-b pb-2 border-yellow-400 dark:border-yellow-500">
           Contact
         </h2>
 
