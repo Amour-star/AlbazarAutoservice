@@ -35,9 +35,7 @@ export default function ContactSection() {
       <Toaster position="top-center" />
 
       {/* 🔳 Background image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
-      />
+      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0" />
 
       {/* 🔲 Overlay */}
       {/* <div className="absolute inset-0 bg-black/60 dark:bg-black/70 z-10" /> */}
@@ -122,7 +120,7 @@ export default function ContactSection() {
             />
           </a>
           <a
-            href="https://instagram.com"
+            href="https://www.instagram.com/albazar_auto_service?igsh=MTY5NzdoaWNtczNpbw%3D%3D&utm_source=qr"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -140,7 +138,14 @@ export default function ContactSection() {
             <img src="/icons/tiktok.svg" alt="TikTok" className="w-7 h-7" />
           </a>
           <a
-            href="https://wa.me/31642218646"
+            href="https://wa.me/31642478920"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src="/icons/whatsapp.svg" alt="WhatsApp" className="w-7 h-7" />
+          </a>
+          <a
+            href="https://wa.me/31645060805"
             target="_blank"
             rel="noopener noreferrer"
           >

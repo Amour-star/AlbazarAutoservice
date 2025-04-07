@@ -5,7 +5,7 @@ import Modal from "react-modal";
 import Zoom from "react-medium-image-zoom";
 import "keen-slider/keen-slider.min.css";
 import "react-medium-image-zoom/dist/styles.css";
-
+import { FaWhatsapp } from "react-icons/fa";
 export default function CarCard({ car }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -91,14 +91,15 @@ export default function CarCard({ car }) {
 
         {/* WhatsApp Contact */}
         <a
-          href={`https://wa.me/31642218646?text=Hallo! Ik ben geïnteresseerd in de ${encodeURIComponent(
+          href={`https://wa.me/31642478920?text=Hallo! Ik ben geïnteresseerd in de ${encodeURIComponent(
             car.title
           )} (${typeof window !== "undefined" ? window.location.href : ""})`}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-3 inline-block bg-green-600 text-white px-4 py-2 rounded hover:opacity-80 transition"
         >
-          📲 Contact via WhatsApp
+          <FaWhatsapp className="inline-block mr-2 text-white" />
+          Contact via WhatsApp
         </a>
 
         {/* Image Zoom Modal */}
