@@ -4,24 +4,24 @@ import { motion } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
 
 export default function ContactSection() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+
   const [form, setForm] = useState({ name: "", email: "", message: "" });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.message) {
-      toast.error("Vul alle velden in.");
-      return;
-    }
-
     const res = await fetch("/api/contact", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ name, email, message }),
     });
-
     if (res.ok) {
       toast.success("Bericht succesvol verzonden!");
-      setForm({ name: "", email: "", message: "" });
+      setName("");
+      setEmail("");
+      setMessage("");
     } else {
       toast.error("Er ging iets mis. Probeer opnieuw.");
     }
@@ -48,7 +48,7 @@ export default function ContactSection() {
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
       >
-        <h2 className="text-3xl font-bold mb-6 text-center text-white-400 border-b pb-2 border-yellow-400 dark:border-yellow-500">
+        <h2 className="text-3xl font-bold mb-6 text-center text-white border-b pb-2 border-yellow-400 dark:border-yellow-500">
           Contact
         </h2>
 
@@ -102,7 +102,16 @@ export default function ContactSection() {
             📍 Hazeldonk 6297, 4836LG Breda (klik om te kopiëren)
           </p>
           <p>
-            <strong>Openingstijden:</strong> Ma – Za: 09:00 – 18:00
+            <strong>Openingstijden:</strong> Ma – Zo: 10:00 – 18:00
+          </p>
+          <p className="mt-6 text-center text-sm text-white">
+            📧 Email ons via{" "}
+            <a
+              href="mailto:info@albazarauto.nl"
+              className="text-yellow-400 underline"
+            >
+              info@albazarauto.nl
+            </a>
           </p>
         </div>
 
@@ -131,7 +140,7 @@ export default function ContactSection() {
             />
           </a>
           <a
-            href="https://tiktok.com"
+            href="https://www.tiktok.com/@albazar.auto?_t=ZN-8vL2aZlN7LD&_r=1"
             target="_blank"
             rel="noopener noreferrer"
           >

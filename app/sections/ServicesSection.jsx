@@ -9,7 +9,8 @@ const services = [
   {
     title: "Auto in- en verkoop",
     description:
-      "Wij bieden betrouwbare voertuigen aan en nemen uw auto graag over.",
+      "Betrouwbare in- en verkoop van voertuigen met uitstekende service.",
+    fullText: `Wij bieden betrouwbare voertuigen aan en nemen uw auto graag over. Onze deskundige medewerkers zorgen voor een eerlijke beoordeling en soepele afhandeling, zodat u zonder zorgen uw auto kunt kopen of verkopen. Neem vandaag nog contact met ons op voor persoonlijk advies en een scherpe offerte!`,
   },
   {
     title: "Auto Export-Import",
@@ -43,22 +44,41 @@ Voor meer informatie of afspraak: stuur ons een bericht.`,
   {
     title: "Alle soorten reparaties",
     description: "Van motor tot elektronica – wij herstellen alles vakkundig.",
+    fullText: `Onze werkplaats is uitgerust voor alle soorten autoreparaties, van mechanische storingen tot complexe elektronische problemen. Onze ervaren monteurs gebruiken moderne diagnoseapparatuur en originele onderdelen om uw voertuig snel en professioneel te herstellen. Wij staan garant voor kwaliteit, transparantie en snelle service.`,
   },
   {
     title: "Schade afwikkeling en reparatie",
     description: "Volledige begeleiding bij schade en herstel.",
+    fullText: `Heeft u schade aan uw voertuig opgelopen? Wij begeleiden u volledig in het proces van schadeafwikkeling en reparatie. Van contact met de verzekering tot professionele herstelling van uw auto – wij zorgen ervoor dat alles snel, zorgvuldig en zonder stress verloopt. Onze experts staan voor u klaar met transparant advies en hoogwaardige service.`,
   },
   {
     title: "Autobandenafdeling",
     description: "Nieuwe banden, uitlijnen en advies op maat.",
+    fullText: `Onze autobandenafdeling biedt een ruim assortiment aan kwaliteitsbanden voor elk seizoen en type voertuig. Wij zorgen voor professionele montage, balanceren en uitlijnen voor optimale veiligheid en rijcomfort. Twijfelt u over de juiste band voor uw auto? Wij geven graag persoonlijk advies dat past bij uw rijstijl en budget.`,
   },
   {
     title: "Airco-service",
     description: "Onderhoud, bijvullen en reparatie van uw airco.",
+    fullText: `Een goed werkende airco is essentieel voor comfort en veiligheid in uw voertuig. Wij verzorgen vakkundig onderhoud, controleren op lekkages, vullen het koudemiddel bij en voeren indien nodig reparaties uit. Zo blijft uw airco efficiënt functioneren en bent u voorbereid op warme dagen. Maak vandaag nog een afspraak voor een airco-check!`,
   },
   {
     title: "Financiering",
     description: "Flexibele financieringsmogelijkheden voor uw aankoop.",
+    fullText: `Wij bieden diverse financieringsopties aan die aansluiten bij uw persoonlijke situatie. Of het nu gaat om de aankoop van een voertuig of een grote reparatie – wij helpen u graag met een betaaloplossing op maat. Transparante voorwaarden, snelle goedkeuring en professioneel advies zorgen ervoor dat u zorgeloos kunt investeren in uw mobiliteit.`,
+  },
+  {
+    title: "Auto- en Glasfoliering",
+    description:
+      "Professionele foliering voor auto's en glas ter bescherming en verfraaiing van uw voertuig.",
+    fullText: `Wilt u uw auto een compleet nieuwe uitstraling geven of uw ramen beschermen tegen zonlicht en inkijk? Bij ons bent u aan het juiste adres voor professionele auto- en glasfoliering.
+
+Auto foliering
+Met auto foliering kunt u eenvoudig en effectief uw auto een frisse, unieke uitstraling geven, zonder permanente lakverandering. Onze hoogwaardige folies beschermen daarnaast uw oorspronkelijke lak tegen steenslag, krassen en weersinvloeden. Kies uit diverse kleuren, finishes (mat, glanzend, satijn) en speciale effecten zoals carbon-look of metallic.
+
+Glasfoliering
+Glasfoliering biedt optimale bescherming en privacy voor uw voertuig. De speciale folie beschermt tegen UV-straling en houdt uw interieur koel, terwijl het zicht naar buiten behouden blijft. Onze glasfolies zijn verkrijgbaar in verschillende tinten, van subtiel tot volledig verduisterend.
+
+Onze ervaren specialisten zorgen voor een naadloze, strakke afwerking. Neem vandaag nog contact op voor vrijblijvend advies of een offerte op maat!`,
   },
 ];
 

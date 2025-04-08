@@ -50,7 +50,7 @@ export default function Navbar({ activeId }) {
           <img
             src="/logo.jpg"
             alt="Logo"
-            className="h-7 w-7 rounded-full object-cover"
+            className="h-10 w-10 rounded-full object-cover"
           />
           Albazar Autoservice
         </a>

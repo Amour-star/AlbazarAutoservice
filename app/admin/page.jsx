@@ -244,7 +244,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="p-6 max-w-5xl mx-auto text-black">
+    <div className="bg-white p-6 max-w-5xl mx-auto text-black">
       <h1 className="text-3xl font-bold mb-6">Auto Beheer</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4 mb-10">
