@@ -15,12 +15,13 @@ export async function POST(req) {
   await transporter.sendMail({
     from: `"Albazar Auto Contact" <${process.env.SMTP_USER}>`,
     to: "info@albazarauto.nl",
+    replyTo: email, // ✅ So you can hit "Reply" in your inbox
     subject: "Nieuw contactbericht via AlbazarAuto.nl",
     html: `
-      <p><strong>Naam:</strong> ${name}</p>
-      <p><strong>Email:</strong> ${email}</p>
-      <p><strong>Bericht:</strong><br/>${message}</p>
-    `,
+    <p><strong>Naam:</strong> ${name}</p>
+    <p><strong>Email:</strong> ${email}</p>
+    <p><strong>Bericht:</strong><br/>${message}</p>
+  `,
   });
 
   return new Response(JSON.stringify({ success: true }));

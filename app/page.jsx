@@ -5,7 +5,11 @@ import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import HomeSection from "./sections/HomeSection";
 import ServicesSection from "./sections/ServicesSection";
-import AutosSection from "./sections/AutosSection";
+import dynamic from "next/dynamic";
+
+const AutosSection = dynamic(() => import("./sections/AutosSection"), {
+  ssr: false,
+});
 import AboutSection from "./sections/AboutSection";
 import ContactSection from "./sections/ContactSection";
 

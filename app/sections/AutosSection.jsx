@@ -1,31 +1,29 @@
 "use client";
 import { useEffect, useState } from "react";
 import CarCard from "../components/CarCard";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../lib/firebase";
 
 export default function AutosSection() {
   const [cars, setCars] = useState([]);
   const [brandFilter, setBrandFilter] = useState("all");
   const [priceFilter, setPriceFilter] = useState("all");
   const [sortBy, setSortBy] = useState("default");
-const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("cars");
-    if (stored) {
-      setCars(JSON.parse(stored));
-    }
-  }, []);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch("/api/cars");
-        const data = await res.json();
-        setCars(data);
+        const snapshot = await getDocs(collection(db, "cars"));
+        const carList = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setCars(carList);
       } catch (err) {
-        console.error("Error loading cars:", err);
+        console.error("Error loading cars from Firestore:", err);
       } finally {
-        setLoading(false); // ✅ Will work now
+        setLoading(false);
       }
     };
     load();
@@ -35,7 +33,6 @@ const [loading, setLoading] = useState(true);
     ...new Set(cars.map((car) => car.brand).filter(Boolean)),
   ];
 
-  // Filtering
   let filteredCars = cars.filter((car) => {
     const brandMatch =
       brandFilter === "all" ||
@@ -53,7 +50,6 @@ const [loading, setLoading] = useState(true);
     return brandMatch && priceMatch;
   });
 
-  // Sorting
   if (sortBy === "price") {
     filteredCars.sort((a, b) => {
       const priceA = parseInt(a.price.replace(/[^\d]/g, "")) || 0;
@@ -69,22 +65,14 @@ const [loading, setLoading] = useState(true);
       id="autos"
       className="relative bg-[#0f0f0f] px-4 sm:px-6 py-12 overflow-hidden scroll-mt-24"
     >
-      {/* Background image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
-      />
-      {/* Overlay */}
-      {/* <div className="absolute inset-0 bg-black/60 dark:bg-black/70 z-10" /> */}
+      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0" />
 
-      {/* Content */}
       <div className="relative z-20 text-yellow-100 max-w-7xl mx-auto">
         <h2 className="text-3xl font-bold text-yellow-400 mb-8 text-center">
           Onze Auto's
         </h2>
 
-        {/* Filters */}
         <div className="flex flex-col md:flex-row md:flex-wrap gap-4 justify-center items-center mb-10 text-white text-sm text-center">
-          {/* Brand Filter */}
           <div>
             <label className="text-sm font-medium">Merk:</label>
             <select
@@ -101,7 +89,6 @@ const [loading, setLoading] = useState(true);
             </select>
           </div>
 
-          {/* Price Filter */}
           <div>
             <label className="text-sm font-medium">Prijs:</label>
             <select
@@ -116,7 +103,6 @@ const [loading, setLoading] = useState(true);
             </select>
           </div>
 
-          {/* Sort Dropdown */}
           <div>
             <label className="text-sm font-medium">Sorteren:</label>
             <select
@@ -130,7 +116,6 @@ const [loading, setLoading] = useState(true);
             </select>
           </div>
 
-          {/* Reset Button */}
           <button
             onClick={() => {
               setBrandFilter("all");
@@ -143,7 +128,6 @@ const [loading, setLoading] = useState(true);
           </button>
         </div>
 
-        {/* Car List */}
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
           {filteredCars.map((car, i) => (
             <CarCard key={i} car={car} />

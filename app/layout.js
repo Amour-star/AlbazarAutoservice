@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en">
-      <body className="scroll-smooth bg-[#0f0f0f] text-white dark:text-yellow-400">
+      <body className="scroll-smooth bg-[#0f0f0f] text-white">
         {showNavbar && <Navbar />}
         <main className={showNavbar ? "pt-16" : ""}>{children}</main>
       </body>

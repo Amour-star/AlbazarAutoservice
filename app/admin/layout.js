@@ -1,14 +1,8 @@
-// app/(admin)/layout.js
-import "../globals.css";
-
-export const metadata = {
-  title: "Admin - Albazar",
-};
-
+// app/admin/layout.jsx
 export default function AdminLayout({ children }) {
   return (
     <html lang="en">
-      <body className="bg-white text-black">{children}</body>
+      <body className="scroll-smooth bg-[#0f0f0f] text-white">{children}</body>
     </html>
   );
 }
