@@ -1,15 +1,19 @@
 "use client";
+
 import { useEffect, useState } from "react";
-import CarCard from "../components/CarCard";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../lib/firebase";
+import CarCard from "../components/CarCard";
+import CarModal from "../components/CarModal";
 
 export default function AutosSection() {
   const [cars, setCars] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedCar, setSelectedCar] = useState(null);
+
   const [brandFilter, setBrandFilter] = useState("all");
   const [priceFilter, setPriceFilter] = useState("all");
   const [sortBy, setSortBy] = useState("default");
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
@@ -26,6 +30,7 @@ export default function AutosSection() {
         setLoading(false);
       }
     };
+
     load();
   }, []);
 
@@ -38,7 +43,11 @@ export default function AutosSection() {
       brandFilter === "all" ||
       car.brand?.toLowerCase() === brandFilter.toLowerCase();
 
-    const numericPrice = parseInt(car.price.replace(/[^\d]/g, "")) || 0;
+    const numericPrice =
+      typeof car.price === "string"
+        ? parseInt(car.price.replace(/[^\d]/g, ""))
+        : Number(car.price) || 0;
+
     const priceMatch =
       priceFilter === "all" ||
       (priceFilter === "under10" && numericPrice < 10000) ||
@@ -52,8 +61,14 @@ export default function AutosSection() {
 
   if (sortBy === "price") {
     filteredCars.sort((a, b) => {
-      const priceA = parseInt(a.price.replace(/[^\d]/g, "")) || 0;
-      const priceB = parseInt(b.price.replace(/[^\d]/g, "")) || 0;
+      const priceA =
+        typeof a.price === "string"
+          ? parseInt(a.price.replace(/[^\d]/g, ""))
+          : Number(a.price) || 0;
+      const priceB =
+        typeof b.price === "string"
+          ? parseInt(b.price.replace(/[^\d]/g, ""))
+          : Number(b.price) || 0;
       return priceA - priceB;
     });
   } else if (sortBy === "year") {
@@ -65,13 +80,17 @@ export default function AutosSection() {
       id="autos"
       className="relative bg-[#0f0f0f] px-4 sm:px-6 py-12 overflow-hidden scroll-mt-24"
     >
-      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0" />
+      {/* Modal for car detail */}
+      {selectedCar && (
+        <CarModal car={selectedCar} onClose={() => setSelectedCar(null)} />
+      )}
 
       <div className="relative z-20 text-yellow-100 max-w-7xl mx-auto">
         <h2 className="text-3xl font-bold text-yellow-400 mb-8 text-center">
           Onze Auto's
         </h2>
 
+        {/* Filters */}
         <div className="flex flex-col md:flex-row md:flex-wrap gap-4 justify-center items-center mb-10 text-white text-sm text-center">
           <div>
             <label className="text-sm font-medium">Merk:</label>
@@ -128,9 +147,26 @@ export default function AutosSection() {
           </button>
         </div>
 
+        {/* Loading */}
+        {loading && (
+          <p className="text-center text-yellow-300 text-lg py-10">
+            Auto's laden...
+          </p>
+        )}
+
+        {/* No matches */}
+        {!loading && filteredCars.length === 0 && (
+          <p className="text-center text-gray-400">Geen auto's gevonden.</p>
+        )}
+
+        {/* Car grid */}
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
-          {filteredCars.map((car, i) => (
-            <CarCard key={i} car={car} />
+          {filteredCars.map((car) => (
+            <CarCard
+              key={car.id}
+              car={car}
+              onClick={() => setSelectedCar(car)}
+            />
           ))}
         </div>
       </div>

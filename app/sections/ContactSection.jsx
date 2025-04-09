@@ -105,6 +105,17 @@ export default function ContactSection() {
             <strong>Openingstijden:</strong> Ma – Zo: 10:00 – 18:00
           </p>
           <p className="mt-6 text-center text-sm text-white">
+            <a href="tel:+31642478920" className="block">
+              +31 6 42478920
+            </a>
+            <a href="tel:+31684430030" className="block">
+              +31 6 84430030
+            </a>
+            <a href="tel:+31645060805" className="block">
+              +31 6 45060805
+            </a>
+          </p>
+          <p className="mt-6 text-center text-sm text-white">
             📧 Email ons via{" "}
             <a
               href="mailto:info@albazarauto.nl"

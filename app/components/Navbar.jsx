@@ -1,19 +1,18 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Moon, Sun, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
+
+const languageFlags = {
+  en: "🇬🇧",
+  nl: "🇳🇱",
+  ar: "🇸🇦",
+};
 
 export default function Navbar({ activeId }) {
-  const [darkMode, setDarkMode] = useState(false);
+  const { language, setLanguage } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("theme");
-    if (stored === "dark") {
-      document.documentElement.classList.add("dark");
-      setDarkMode(true);
-    }
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -21,23 +20,11 @@ export default function Navbar({ activeId }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const toggleDarkMode = () => {
-    const newMode = !darkMode;
-    setDarkMode(newMode);
-    if (newMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  };
-
   const links = ["home", "services", "autos", "about", "contact"];
 
   return (
     <nav
-      className={`fixed top-0 left-0 w-full z-50 bg-[#1a1a1a]/90 dark:bg-[#1a1a1a]/90 border-b border-yellow-700 backdrop-blur-sm transition-shadow ${
+      className={`fixed top-0 left-0 w-full z-50 bg-[#1a1a1a]/90 border-b border-yellow-700 backdrop-blur-sm transition-shadow ${
         scrolled ? "shadow-md" : ""
       }`}
     >
@@ -45,7 +32,7 @@ export default function Navbar({ activeId }) {
         {/* Logo + Brand */}
         <a
           href="#home"
-          className="flex items-center gap-2 text-yellow-500 dark:text-yellow-300 text-xl font-bold"
+          className="flex items-center gap-2 text-yellow-500 text-xl font-bold"
         >
           <img
             src="/logo.jpg"
@@ -71,17 +58,32 @@ export default function Navbar({ activeId }) {
             </a>
           ))}
 
-          {/* <button
-            onClick={toggleDarkMode}
-            className="text-yellow-400 hover:text-yellow-200"
-            aria-label="Toggle Dark Mode"
-          >
-            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </button> */}
+          {/* Language Toggle */}
+          <div className="relative">
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              className="bg-yellow-400 text-black font-bold px-2 py-1 rounded"
+            >
+              <option value="en">🇬🇧 English</option>
+              <option value="nl">🇳🇱 Nederlands</option>
+              <option value="ar">🇸🇦 العربية</option>
+            </select>
+          </div>
         </div>
 
         {/* Mobile Toggle */}
-        <div className="md:hidden">
+        <div className="md:hidden flex items-center gap-4">
+          {/* Language Selector (Mobile) */}
+          <select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            className="bg-yellow-400 text-black font-bold px-2 py-1 rounded"
+          >
+            <option value="en">🇬🇧</option>
+            <option value="nl">🇳🇱</option>
+            <option value="ar">🇸🇦</option>
+          </select>
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             className="text-yellow-400 hover:text-yellow-200"
@@ -107,12 +109,6 @@ export default function Navbar({ activeId }) {
               {id.charAt(0).toUpperCase() + id.slice(1)}
             </a>
           ))}
-          {/* <button
-            onClick={toggleDarkMode}
-            className="text-yellow-300 hover:text-yellow-100 mt-2"
-          >
-            {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
-          </button>*/}
         </div>
       )}
     </nav>
