@@ -169,6 +169,17 @@ export default function ContactSection() {
             />
           </a>
           <a
+            href="https://wa.me/31684430030"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="/icons/whatsapp-social-media-svgrepo-com.svg"
+              alt="WhatsApp"
+              className="w-7 h-7"
+            />
+          </a>
+          <a
             href="https://wa.me/31645060805"
             target="_blank"
             rel="noopener noreferrer"
